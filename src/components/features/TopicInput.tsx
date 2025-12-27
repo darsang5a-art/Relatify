@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { Camera, Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 
 interface TopicInputProps {
   onSubmit: (topic: string) => void;
-  onScanClick: () => void;
   loading: boolean;
 }
 
-export function TopicInput({ onSubmit, onScanClick, loading }: TopicInputProps) {
+export function TopicInput({ onSubmit, loading }: TopicInputProps) {
   const [topic, setTopic] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,24 +20,14 @@ export function TopicInput({ onSubmit, onScanClick, loading }: TopicInputProps) 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="relative">
+      <div>
         <Textarea
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           placeholder="What do you want to understand? (e.g., quantum physics, photosynthesis, machine learning...)"
-          className="min-h-[120px] text-lg resize-none pr-12"
+          className="min-h-[120px] text-lg resize-none"
           disabled={loading}
         />
-        <Button
-          type="button"
-          size="icon"
-          variant="ghost"
-          onClick={onScanClick}
-          className="absolute bottom-3 right-3"
-          disabled={loading}
-        >
-          <Camera className="w-5 h-5" />
-        </Button>
       </div>
 
       <div className="flex gap-3">

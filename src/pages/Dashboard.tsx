@@ -3,7 +3,6 @@ import { Layout } from '../components/layout/Layout';
 import { TopicInput } from '../components/features/TopicInput';
 import { ExplanationDisplay } from '../components/features/ExplanationDisplay';
 import { FollowUpSection } from '../components/features/FollowUpSection';
-import { ScanLearnModal } from '../components/features/ScanLearnModal';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../hooks/use-toast';
@@ -23,7 +22,6 @@ export default function Dashboard() {
   const [followUps, setFollowUps] = useState<FollowUp[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
   const [learningStyle, setLearningStyle] = useState<string>('');
-  const [showScanModal, setShowScanModal] = useState(false);
   const [recentTopics, setRecentTopics] = useState<Explanation[]>([]);
   const [stats, setStats] = useState({ total: 0, streak: 0, stars: 0 });
 
@@ -220,11 +218,6 @@ export default function Dashboard() {
     }
   };
 
-  const handleScanComplete = (text: string) => {
-    setShowScanModal(false);
-    handleTopicSubmit(text);
-  };
-
   const suggestedFollowUps = [
     'How does this connect to real life?',
     'Explain this with another example',
@@ -266,7 +259,6 @@ export default function Dashboard() {
           <h2 className="text-2xl font-display font-semibold mb-6">What do you want to understand?</h2>
           <TopicInput
             onSubmit={handleTopicSubmit}
-            onScanClick={() => setShowScanModal(true)}
             loading={loading}
           />
         </Card>
@@ -323,14 +315,6 @@ export default function Dashboard() {
           </Card>
         )}
       </div>
-
-      {/* Scan Modal */}
-      {showScanModal && (
-        <ScanLearnModal
-          onExtractComplete={handleScanComplete}
-          onClose={() => setShowScanModal(false)}
-        />
-      )}
     </Layout>
   );
 }
