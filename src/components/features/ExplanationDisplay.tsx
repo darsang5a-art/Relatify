@@ -19,10 +19,9 @@ import {
 interface ExplanationDisplayProps {
   topic: string;
   data: ExplanationData;
-  onQuizComplete?: (score: number) => void;
 }
 
-export function ExplanationDisplay({ topic, data, onQuizComplete }: ExplanationDisplayProps) {
+export function ExplanationDisplay({ topic, data }: ExplanationDisplayProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['simple', 'analogy']));
   const [quizAnswers, setQuizAnswers] = useState<number[]>([]);
   const [showQuizResults, setShowQuizResults] = useState(false);
@@ -42,9 +41,6 @@ export function ExplanationDisplay({ topic, data, onQuizComplete }: ExplanationD
       return acc + (answer === data.quiz[idx].correctAnswer ? 1 : 0);
     }, 0);
     setShowQuizResults(true);
-    if (onQuizComplete) {
-      onQuizComplete(score);
-    }
   };
 
   const sections = [
@@ -228,9 +224,6 @@ export function ExplanationDisplay({ topic, data, onQuizComplete }: ExplanationD
                 <p className="text-lg font-semibold">
                   You scored {quizAnswers.reduce((acc, answer, idx) => acc + (answer === data.quiz[idx].correctAnswer ? 1 : 0), 0)} out of {data.quiz.length}!
                 </p>
-                {quizAnswers.reduce((acc, answer, idx) => acc + (answer === data.quiz[idx].correctAnswer ? 1 : 0), 0) === data.quiz.length && (
-                  <Badge className="mt-2 gradient-primary border-0">Perfect Score! 🌟</Badge>
-                )}
               </div>
             )}
           </div>

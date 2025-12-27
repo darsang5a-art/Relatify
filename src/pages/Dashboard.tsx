@@ -9,7 +9,7 @@ import { useToast } from '../hooks/use-toast';
 import { Explanation, ExplanationData, FollowUp, UserInterest, LearningStyle } from '../types';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { Card } from '../components/ui/card';
-import { BookOpen, TrendingUp, Award } from 'lucide-react';
+import { BookOpen, TrendingUp } from 'lucide-react';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -23,7 +23,7 @@ export default function Dashboard() {
   const [interests, setInterests] = useState<string[]>([]);
   const [learningStyle, setLearningStyle] = useState<string>('');
   const [recentTopics, setRecentTopics] = useState<Explanation[]>([]);
-  const [stats, setStats] = useState({ total: 0, streak: 0, stars: 0 });
+  const [stats, setStats] = useState({ total: 0, streak: 0 });
 
   useEffect(() => {
     if (user) {
@@ -84,7 +84,6 @@ export default function Dashboard() {
       setStats({
         total: data.total_explanations,
         streak: data.current_streak,
-        stars: data.total_stars,
       });
     }
   };
@@ -236,7 +235,7 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
           <Card className="p-6 text-center border-purple-100 gradient-card">
             <BookOpen className="w-8 h-8 text-purple-600 mx-auto mb-2" />
             <div className="text-3xl font-bold text-purple-900">{stats.total}</div>
@@ -246,11 +245,6 @@ export default function Dashboard() {
             <TrendingUp className="w-8 h-8 text-pink-600 mx-auto mb-2" />
             <div className="text-3xl font-bold text-pink-900">{stats.streak}</div>
             <div className="text-sm text-muted-foreground">Day Streak</div>
-          </Card>
-          <Card className="p-6 text-center border-purple-100 gradient-card">
-            <Award className="w-8 h-8 text-amber-600 mx-auto mb-2" />
-            <div className="text-3xl font-bold text-amber-900">{stats.stars}</div>
-            <div className="text-sm text-muted-foreground">Stars Earned</div>
           </Card>
         </div>
 
@@ -269,14 +263,6 @@ export default function Dashboard() {
             <ExplanationDisplay
               topic={currentTopic}
               data={currentExplanation}
-              onQuizComplete={(score) => {
-                if (score === currentExplanation.quiz.length) {
-                  toast({
-                    title: 'Perfect Score! 🌟',
-                    description: 'You earned a star!',
-                  });
-                }
-              }}
             />
 
             {/* Follow-Up Questions */}

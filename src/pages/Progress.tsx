@@ -4,30 +4,25 @@ import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { UserProgress, Badge as BadgeType, Explanation } from '../types';
+import { UserProgress, Explanation } from '../types';
 import {
-  Trophy,
   Flame,
-  Star,
   BookOpen,
   TrendingUp,
   Calendar,
-  Award,
   Zap,
-  Target,
 } from 'lucide-react';
 import { formatDate } from '../lib/utils';
 
 export default function Progress() {
   const { user } = useAuth();
   const [progress, setProgress] = useState<UserProgress | null>(null);
-  const [badges, setBadges] = useState<BadgeType[]>([]);
+
   const [recentActivity, setRecentActivity] = useState<Explanation[]>([]);
 
   useEffect(() => {
     if (user) {
       loadProgress();
-      loadBadges();
       loadRecentActivity();
     }
   }, [user]);
@@ -46,19 +41,7 @@ export default function Progress() {
     }
   };
 
-  const loadBadges = async () => {
-    if (!user) return;
 
-    const { data } = await supabase
-      .from('badges')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('earned_at', { ascending: false });
-
-    if (data) {
-      setBadges(data);
-    }
-  };
 
   const loadRecentActivity = async () => {
     if (!user) return;
@@ -75,16 +58,7 @@ export default function Progress() {
     }
   };
 
-  const badgeIcons: Record<string, { icon: any; color: string }> = {
-    'First Explanation': { icon: BookOpen, color: 'text-blue-500' },
-    '7-Day Streak': { icon: Flame, color: 'text-orange-500' },
-    '30-Day Streak': { icon: Flame, color: 'text-red-500' },
-    '10 Topics Mastered': { icon: Target, color: 'text-green-500' },
-    '50 Topics Mastered': { icon: Trophy, color: 'text-purple-500' },
-    'Quiz Master': { icon: Award, color: 'text-amber-500' },
-    'Curious Learner': { icon: Zap, color: 'text-pink-500' },
-    'Scan Master': { icon: Star, color: 'text-indigo-500' },
-  };
+
 
   return (
     <Layout>
@@ -96,7 +70,7 @@ export default function Progress() {
         </div>
 
         {/* Main Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
           <Card className="p-6 border-purple-100">
             <div className="flex items-center gap-4">
               <div className="p-3 gradient-primary rounded-xl">
@@ -132,48 +106,7 @@ export default function Progress() {
               </div>
             </div>
           </Card>
-
-          <Card className="p-6 border-purple-100">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-xl">
-                <Star className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <div className="text-3xl font-bold">{progress?.total_stars || 0}</div>
-                <div className="text-sm text-muted-foreground">Stars Earned</div>
-              </div>
-            </div>
-          </Card>
         </div>
-
-        {/* Badges Section */}
-        <Card className="p-8 border-purple-100">
-          <h2 className="text-2xl font-display font-semibold mb-6 flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-purple-600" />
-            Your Badges
-          </h2>
-
-          {badges.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <Award className="w-16 h-16 mx-auto mb-4 opacity-20" />
-              <p>Start learning to earn badges!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {badges.map((badge) => {
-                const badgeInfo = badgeIcons[badge.badge_type] || { icon: Award, color: 'text-gray-500' };
-                const IconComponent = badgeInfo.icon;
-                return (
-                  <Card key={badge.id} className="p-4 text-center border-purple-100 gradient-card">
-                    <IconComponent className={`w-12 h-12 mx-auto mb-2 ${badgeInfo.color}`} />
-                    <div className="font-semibold text-sm">{badge.badge_type}</div>
-                    <div className="text-xs text-muted-foreground">{formatDate(badge.earned_at)}</div>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
-        </Card>
 
         {/* Recent Activity */}
         <Card className="p-8 border-purple-100">
