@@ -15,7 +15,7 @@ function App() {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
 
-  // Check if user has completed onboarding by checking if they have interests
+  // Check if user has completed onboarding by checking if they have progress record
   useEffect(() => {
     if (user) {
       checkOnboardingStatus();
@@ -26,29 +26,38 @@ function App() {
   }, [user]);
 
   const checkOnboardingStatus = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('[Onboarding Check] No user found');
+      setCheckingOnboarding(false);
+      return;
+    }
     
+    console.log('[Onboarding Check] Starting check for user:', user.id);
     setCheckingOnboarding(true);
     
     try {
-      // Check if user has any interests (created during onboarding)
+      // Check if user has progress record (only created when onboarding completes)
       const { data, error } = await supabase
-        .from('user_interests')
+        .from('user_progress')
         .select('id')
         .eq('user_id', user.id)
-        .limit(1);
+        .maybeSingle();
       
       if (error) {
-        console.error('Error checking onboarding status:', error);
+        console.error('[Onboarding Check] Database error:', error);
         setHasCompletedOnboarding(false);
+      } else if (data) {
+        console.log('[Onboarding Check] User has completed onboarding');
+        setHasCompletedOnboarding(true);
       } else {
-        // User has completed onboarding if they have at least one interest
-        setHasCompletedOnboarding(data && data.length > 0);
+        console.log('[Onboarding Check] User has NOT completed onboarding');
+        setHasCompletedOnboarding(false);
       }
     } catch (error) {
-      console.error('Unexpected error in checkOnboardingStatus:', error);
+      console.error('[Onboarding Check] Unexpected error:', error);
       setHasCompletedOnboarding(false);
     } finally {
+      console.log('[Onboarding Check] Check complete, setting loading to false');
       setCheckingOnboarding(false);
     }
   };
