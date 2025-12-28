@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAuth } from './hooks/useAuth';
-import { useOnboardingStore } from './stores/onboardingStore';
 import { AuthForm } from './components/auth/AuthForm';
 import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
 import Dashboard from './pages/Dashboard';
@@ -8,12 +8,40 @@ import Progress from './pages/Progress';
 import Profile from './pages/Profile';
 import { Toaster } from './components/ui/toaster';
 import { Loader2 } from 'lucide-react';
+import { supabase } from './lib/supabase';
 
 function App() {
   const { user, loading } = useAuth();
-  const { hasCompletedOnboarding } = useOnboardingStore();
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
 
-  if (loading) {
+  // Check if user has completed onboarding by checking database
+  useEffect(() => {
+    if (user) {
+      checkOnboardingStatus();
+    } else {
+      setCheckingOnboarding(false);
+      setHasCompletedOnboarding(false);
+    }
+  }, [user]);
+
+  const checkOnboardingStatus = async () => {
+    if (!user) return;
+    
+    setCheckingOnboarding(true);
+    
+    // Check if user has progress record (created during onboarding)
+    const { data } = await supabase
+      .from('user_progress')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+    
+    setHasCompletedOnboarding(!!data);
+    setCheckingOnboarding(false);
+  };
+
+  if (loading || checkingOnboarding) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-pink-50">
         <div className="text-center">
