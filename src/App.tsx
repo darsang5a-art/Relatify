@@ -15,7 +15,7 @@ function App() {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
 
-  // Check if user has completed onboarding by checking database
+  // Check if user has completed onboarding by checking if they have interests
   useEffect(() => {
     if (user) {
       checkOnboardingStatus();
@@ -31,19 +31,20 @@ function App() {
     setCheckingOnboarding(true);
     
     try {
-      // Check if user has progress record (created during onboarding)
+      // Check if user has any interests (created during onboarding)
       const { data, error } = await supabase
-        .from('user_progress')
+        .from('user_interests')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .limit(1);
       
-      // If no data and no error, or error is "PGRST116" (not found), user hasn't completed onboarding
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error('Error checking onboarding status:', error);
+        setHasCompletedOnboarding(false);
+      } else {
+        // User has completed onboarding if they have at least one interest
+        setHasCompletedOnboarding(data && data.length > 0);
       }
-      
-      setHasCompletedOnboarding(!!data);
     } catch (error) {
       console.error('Unexpected error in checkOnboardingStatus:', error);
       setHasCompletedOnboarding(false);
