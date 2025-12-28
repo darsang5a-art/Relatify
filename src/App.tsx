@@ -30,15 +30,26 @@ function App() {
     
     setCheckingOnboarding(true);
     
-    // Check if user has progress record (created during onboarding)
-    const { data } = await supabase
-      .from('user_progress')
-      .select('id')
-      .eq('user_id', user.id)
-      .single();
-    
-    setHasCompletedOnboarding(!!data);
-    setCheckingOnboarding(false);
+    try {
+      // Check if user has progress record (created during onboarding)
+      const { data, error } = await supabase
+        .from('user_progress')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+      
+      // If no data and no error, or error is "PGRST116" (not found), user hasn't completed onboarding
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error checking onboarding status:', error);
+      }
+      
+      setHasCompletedOnboarding(!!data);
+    } catch (error) {
+      console.error('Unexpected error in checkOnboardingStatus:', error);
+      setHasCompletedOnboarding(false);
+    } finally {
+      setCheckingOnboarding(false);
+    }
   };
 
   if (loading || checkingOnboarding) {
