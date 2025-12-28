@@ -6,7 +6,7 @@ import { FollowUpSection } from '../components/features/FollowUpSection';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../hooks/use-toast';
-import { Explanation, ExplanationData, FollowUp, UserInterest, LearningStyle } from '../types';
+import { Explanation, ExplanationData, FollowUp } from '../types';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { Card } from '../components/ui/card';
 import { BookOpen, TrendingUp } from 'lucide-react';
@@ -21,7 +21,6 @@ export default function Dashboard() {
   const [currentExplanationId, setCurrentExplanationId] = useState<string | null>(null);
   const [followUps, setFollowUps] = useState<FollowUp[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
-  const [learningStyle, setLearningStyle] = useState<string>('');
   const [recentTopics, setRecentTopics] = useState<Explanation[]>([]);
   const [stats, setStats] = useState({ total: 0, streak: 0 });
 
@@ -41,18 +40,8 @@ export default function Dashboard() {
       .select('interest')
       .eq('user_id', user.id);
 
-    const { data: styleData } = await supabase
-      .from('learning_styles')
-      .select('style')
-      .eq('user_id', user.id)
-      .single();
-
     if (interestsData) {
       setInterests(interestsData.map((i) => i.interest));
-    }
-
-    if (styleData) {
-      setLearningStyle(styleData.style);
     }
   };
 
@@ -100,7 +89,6 @@ export default function Dashboard() {
         body: {
           topic,
           interests,
-          learningStyle,
         },
       });
 
@@ -167,7 +155,6 @@ export default function Dashboard() {
           question,
           context: currentTopic,
           interests,
-          learningStyle,
         },
       });
 

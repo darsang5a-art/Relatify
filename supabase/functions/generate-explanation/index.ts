@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { topic, interests, learningStyle } = await req.json();
+    const { topic, interests } = await req.json();
 
     if (!topic) {
       return new Response(
@@ -19,9 +19,8 @@ Deno.serve(async (req) => {
     }
 
     const interestsText = interests?.length > 0 ? interests.join(', ') : 'general knowledge';
-    const styleText = learningStyle || 'clear and engaging';
 
-    const prompt = `You are an expert educator creating personalized learning content. The learner is interested in: ${interestsText}. Their preferred learning style is: ${styleText}.
+    const prompt = `You are an expert educator creating personalized learning content. The learner is interested in: ${interestsText}.
 
 Topic to explain: "${topic}"
 
@@ -62,7 +61,7 @@ Format your response as a valid JSON object with this exact structure:
   ]
 }
 
-Adapt the tone and complexity to match the ${styleText} learning style.`;
+Use a clear, engaging tone appropriate for curious learners of all ages.`;
 
     const response = await fetch(`${ONSPACE_AI_BASE_URL}/chat/completions`, {
       method: 'POST',

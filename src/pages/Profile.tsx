@@ -8,7 +8,7 @@ import { Badge } from '../components/ui/badge';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../hooks/use-toast';
-import { UserInterest, LearningStyle, POPULAR_INTERESTS, LEARNING_STYLE_OPTIONS } from '../types';
+import { POPULAR_INTERESTS } from '../types';
 import { User, Mail, Sparkles, Plus, X, Save, Loader2 } from 'lucide-react';
 
 export default function Profile() {
@@ -17,7 +17,6 @@ export default function Profile() {
   const [username, setUsername] = useState('');
   const [interests, setInterests] = useState<string[]>([]);
   const [customInterest, setCustomInterest] = useState('');
-  const [learningStyle, setLearningStyle] = useState('');
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -37,18 +36,8 @@ export default function Profile() {
       .select('interest')
       .eq('user_id', user.id);
 
-    const { data: styleData } = await supabase
-      .from('learning_styles')
-      .select('style')
-      .eq('user_id', user.id)
-      .single();
-
     if (interestsData) {
       setInterests(interestsData.map((i) => i.interest));
-    }
-
-    if (styleData) {
-      setLearningStyle(styleData.style);
     }
 
     setLoading(false);
@@ -92,14 +81,6 @@ export default function Profile() {
           interest,
         });
       }
-
-      // Update learning style
-      await supabase
-        .from('learning_styles')
-        .upsert({
-          user_id: user.id,
-          style: learningStyle,
-        });
 
       toast({
         title: 'Profile Updated',
@@ -233,39 +214,13 @@ export default function Profile() {
           )}
         </Card>
 
-        {/* Learning Style */}
-        <Card className="p-8 border-purple-100">
-          <h2 className="text-2xl font-display font-semibold mb-6">Learning Style</h2>
 
-          {loading ? (
-            <div className="text-center py-8">
-              <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {LEARNING_STYLE_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => setLearningStyle(option.value)}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
-                    learningStyle === option.value
-                      ? 'border-primary gradient-card'
-                      : 'border-gray-200 hover:border-primary/50'
-                  }`}
-                >
-                  <div className="font-semibold mb-1">{option.label}</div>
-                  <div className="text-sm text-muted-foreground">{option.description}</div>
-                </button>
-              ))}
-            </div>
-          )}
-        </Card>
 
         {/* Save Button */}
         <div className="flex justify-center">
           <Button
             onClick={handleSave}
-            disabled={saveLoading || interests.length === 0 || !learningStyle}
+            disabled={saveLoading || interests.length === 0}
             className="gradient-primary gap-2 px-8 py-6 text-lg"
           >
             {saveLoading ? (

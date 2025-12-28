@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { question, context, interests, learningStyle } = await req.json();
+    const { question, context, interests } = await req.json();
 
     if (!question) {
       return new Response(
@@ -19,17 +19,15 @@ Deno.serve(async (req) => {
     }
 
     const interestsText = interests?.length > 0 ? interests.join(', ') : 'general knowledge';
-    const styleText = learningStyle || 'clear and engaging';
     const contextText = context ? `\n\nContext from previous explanation: ${context}` : '';
 
-    const prompt = `You are a helpful tutor answering a follow-up question. The learner is interested in: ${interestsText}. Their preferred learning style is: ${styleText}.${contextText}
+    const prompt = `You are a helpful tutor answering a follow-up question. The learner is interested in: ${interestsText}.${contextText}
 
 Follow-up question: "${question}"
 
 Provide a clear, personalized answer that:
 - Directly addresses their question
 - Uses examples related to their interests when relevant
-- Matches their learning style (${styleText})
 - Is encouraging and builds curiosity
 - Is 2-4 paragraphs long
 
