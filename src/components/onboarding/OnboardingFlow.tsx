@@ -6,7 +6,7 @@ import { Label } from '../ui/label';
 import { Badge } from '../ui/badge';
 import { useToast } from '../../hooks/use-toast';
 import { useAuth } from '../../hooks/useAuth';
-
+import { useOnboardingStore } from '../../stores/onboardingStore';
 import { supabase } from '../../lib/supabase';
 import { POPULAR_INTERESTS } from '../../types';
 import { Sparkles, Plus, ArrowRight, Loader2 } from 'lucide-react';
@@ -16,7 +16,7 @@ export function OnboardingFlow() {
   const [customInterest, setCustomInterest] = useState('');
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-
+  const { setHasCompletedOnboarding, setInterests } = useOnboardingStore();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -55,6 +55,9 @@ export function OnboardingFlow() {
         current_streak: 0,
         longest_streak: 0,
       });
+
+      setInterests(selectedInterests);
+      setHasCompletedOnboarding(true);
 
       toast({
         title: 'Welcome to Relatify!',

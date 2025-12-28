@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { useAuth } from './hooks/useAuth';
+import { useOnboardingStore } from './stores/onboardingStore';
 import { AuthForm } from './components/auth/AuthForm';
 import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
 import Dashboard from './pages/Dashboard';
@@ -8,61 +8,12 @@ import Progress from './pages/Progress';
 import Profile from './pages/Profile';
 import { Toaster } from './components/ui/toaster';
 import { Loader2 } from 'lucide-react';
-import { supabase } from './lib/supabase';
 
 function App() {
   const { user, loading } = useAuth();
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
-  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
+  const { hasCompletedOnboarding } = useOnboardingStore();
 
-  // Check if user has completed onboarding by checking if they have progress record
-  useEffect(() => {
-    if (user) {
-      checkOnboardingStatus();
-    } else {
-      setCheckingOnboarding(false);
-      setHasCompletedOnboarding(false);
-    }
-  }, [user]);
-
-  const checkOnboardingStatus = async () => {
-    if (!user) {
-      console.log('[Onboarding Check] No user found');
-      setCheckingOnboarding(false);
-      return;
-    }
-    
-    console.log('[Onboarding Check] Starting check for user:', user.id);
-    setCheckingOnboarding(true);
-    
-    try {
-      // Check if user has progress record (only created when onboarding completes)
-      const { data, error } = await supabase
-        .from('user_progress')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      
-      if (error) {
-        console.error('[Onboarding Check] Database error:', error);
-        setHasCompletedOnboarding(false);
-      } else if (data) {
-        console.log('[Onboarding Check] User has completed onboarding');
-        setHasCompletedOnboarding(true);
-      } else {
-        console.log('[Onboarding Check] User has NOT completed onboarding');
-        setHasCompletedOnboarding(false);
-      }
-    } catch (error) {
-      console.error('[Onboarding Check] Unexpected error:', error);
-      setHasCompletedOnboarding(false);
-    } finally {
-      console.log('[Onboarding Check] Check complete, setting loading to false');
-      setCheckingOnboarding(false);
-    }
-  };
-
-  if (loading || checkingOnboarding) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-pink-50">
         <div className="text-center">
