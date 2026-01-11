@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { Menu, X, LogOut, User, BarChart3, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 
-const LOGO_URL = 'https://cdn-ai.onspace.ai/onspace/files/7rbwGqywCfUfzWCNgAkz7e/Relatify_logo.jpg';
+const LOGO_URL = 'https://cdn-ai.onspace.ai/onspace/files/ZRHhaPmVo2847qB3o36c7G/grok-image-cfc644d8-f9de-4843-ba4c-63a4e3085f92_(1).png';
 
 interface LayoutProps {
   children: ReactNode;

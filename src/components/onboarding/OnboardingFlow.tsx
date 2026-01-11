@@ -11,7 +11,7 @@ import { supabase } from '../../lib/supabase';
 import { POPULAR_INTERESTS } from '../../types';
 import { Plus, ArrowRight, Loader2 } from 'lucide-react';
 
-const LOGO_URL = 'https://cdn-ai.onspace.ai/onspace/files/7rbwGqywCfUfzWCNgAkz7e/Relatify_logo.jpg';
+const LOGO_URL = 'https://cdn-ai.onspace.ai/onspace/files/ZRHhaPmVo2847qB3o36c7G/grok-image-cfc644d8-f9de-4843-ba4c-63a4e3085f92_(1).png';
 
 export function OnboardingFlow() {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
