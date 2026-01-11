@@ -6,7 +6,9 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { useToast } from '../../hooks/use-toast';
-import { Loader2, Mail, Lock, User, Sparkles } from 'lucide-react';
+import { Loader2, Mail, Lock, User } from 'lucide-react';
+
+const LOGO_URL = 'https://cdn-ai.onspace.ai/onspace/files/7rbwGqywCfUfzWCNgAkz7e/Relatify_logo.jpg';
 
 export function AuthForm() {
   const [mode, setMode] = useState<'login' | 'signup' | 'verify'>('login');
@@ -82,8 +84,12 @@ export function AuthForm() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8 animate-slide-up">
-          <div className="inline-flex items-center justify-center w-16 h-16 gradient-primary rounded-2xl shadow-xl mb-4">
-            <Sparkles className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img
+              src={LOGO_URL}
+              alt="Relatify Logo"
+              className="w-24 h-24 object-contain"
+            />
           </div>
           <h1 className="text-4xl font-display font-bold text-gradient mb-2">Relatify</h1>
           <p className="text-muted-foreground">Learning that adapts to you</p>

@@ -9,7 +9,9 @@ import { useAuth } from '../../hooks/useAuth';
 import { useOnboardingStore } from '../../stores/onboardingStore';
 import { supabase } from '../../lib/supabase';
 import { POPULAR_INTERESTS } from '../../types';
-import { Sparkles, Plus, ArrowRight, Loader2 } from 'lucide-react';
+import { Plus, ArrowRight, Loader2 } from 'lucide-react';
+
+const LOGO_URL = 'https://cdn-ai.onspace.ai/onspace/files/7rbwGqywCfUfzWCNgAkz7e/Relatify_logo.jpg';
 
 export function OnboardingFlow() {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -81,8 +83,12 @@ export function OnboardingFlow() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-purple-50 via-white to-pink-50">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8 animate-slide-up">
-          <div className="inline-flex items-center justify-center w-16 h-16 gradient-primary rounded-2xl shadow-xl mb-4">
-            <Sparkles className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img
+              src={LOGO_URL}
+              alt="Relatify Logo"
+              className="w-20 h-20 object-contain"
+            />
           </div>
           <h1 className="text-4xl font-display font-bold text-gradient mb-2">Let's Personalize Your Learning</h1>
           <p className="text-muted-foreground">Choose your interests for personalized analogies</p>

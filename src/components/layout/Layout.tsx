@@ -2,8 +2,10 @@ import { ReactNode } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
-import { Sparkles, Menu, X, LogOut, User, BarChart3, BookOpen } from 'lucide-react';
+import { Menu, X, LogOut, User, BarChart3, BookOpen } from 'lucide-react';
 import { useState } from 'react';
+
+const LOGO_URL = 'https://cdn-ai.onspace.ai/onspace/files/7rbwGqywCfUfzWCNgAkz7e/Relatify_logo.jpg';
 
 interface LayoutProps {
   children: ReactNode;
@@ -28,11 +30,13 @@ export function Layout({ children }: LayoutProps) {
             {/* Logo */}
             <button
               onClick={() => navigate(user ? '/dashboard' : '/')}
-              className="flex items-center gap-2 group"
+              className="flex items-center gap-3 group"
             >
-              <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
+              <img
+                src={LOGO_URL}
+                alt="Relatify Logo"
+                className="w-10 h-10 object-contain group-hover:scale-105 transition-transform"
+              />
               <span className="text-2xl font-display font-bold text-gradient">Relatify</span>
             </button>
 
